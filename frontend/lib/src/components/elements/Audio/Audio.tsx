@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import React, { ReactElement, useEffect, useRef } from "react"
+import React, { ReactElement } from "react"
 import { Audio as AudioProto } from "@streamlit/lib/src/proto"
 import { StreamlitEndpoints } from "@streamlit/lib/src/StreamlitEndpoints"
 
@@ -29,24 +29,14 @@ export default function Audio({
   width,
   endpoints,
 }: AudioProps): ReactElement {
-  const audioRef = useRef<HTMLAudioElement>(null)
+  let uri = endpoints.buildMediaURL(element.url)
+  if (element.startTime) {
+    uri = `${uri}#t=${element.startTime}`
+  }
 
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.currentTime = element.startTime
-    }
-  }, [element.startTime])
-
-  const uri = endpoints.buildMediaURL(element.url)
   return (
-    <audio
-      data-testid="stAudio"
-      id="audio"
-      ref={audioRef}
-      controls
-      src={uri}
-      className="stAudio"
-      style={{ width }}
-    />
+    <audio data-testid="stAudio" id="audio" controls className="stAudio" style={{ width }}>
+      <source src={uri} type={element.mimetype} />
+    </audio>
   )
 }

@@ -408,6 +408,7 @@ def marshall_audio(
     from validators import url
 
     proto.start_time = start_time
+    proto.mimetype = mimetype
 
     if isinstance(data, str) and url(data):
         proto.url = data
